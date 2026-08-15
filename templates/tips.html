@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Eco Tips | EcoLife</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<!-- =====================================================
+     NAVBAR
+===================================================== -->
+
+<nav class="navbar">
+
+    <a href="{{ url_for('index') }}" class="logo">
+        <div class="logo-icon">🌱</div>
+        EcoLife
+    </a>
+
+    <div class="nav-links">
+        <a href="{{ url_for('index') }}">Home</a>
+        <a href="{{ url_for('quiz') }}">Quiz</a>
+        <a href="{{ url_for('tips') }}">Tips</a>
+        <a href="{{ url_for('challenge') }}">Challenge</a>
+        <a href="{{ url_for('feedback') }}">Feedback</a>
+        <a href="{{ url_for('about') }}">About</a>
+    </div>
+
+</nav>
+
+
+<!-- =====================================================
+     TIPS PAGE
+===================================================== -->
+
+<main class="page-container">
+
+    <div class="tips-heading">
+
+        <h1 class="tips-title">💡 Eco-Friendly Tips</h1>
+
+        <p class="section-text">
+            Small habits can create a big difference.
+        </p>
+
+    </div>
+
+
+    <!-- =================================================
+         TIP BOXES
+    ================================================== -->
+
+    <div class="tips-grid">
+
+
+        <!-- TIP 1 -->
+
+        <div class="tip-card">
+
+            <div class="tip-number">
+                1
+            </div>
+
+            <h2>♻️ Recycle More</h2>
+
+            <p>
+                Separate paper, plastic, glass and metal waste.
+                Recycling helps reduce pollution and saves
+                valuable natural resources.
+            </p>
+
+        </div>
+
+
+        <!-- TIP 2 -->
+
+        <div class="tip-card">
+
+            <div class="tip-number">
+                2
+            </div>
+
+            <h2>💧 Save Water</h2>
+
+            <p>
+                Turn off the tap while brushing your teeth.
+                Fix leaking taps and avoid wasting water
+                during daily activities.
+            </p>
+
+        </div>
+
+
+        <!-- TIP 3 -->
+
+        <div class="tip-card">
+
+            <div class="tip-number">
+                3
+            </div>
+
+            <h2>🌱 Plant Trees</h2>
+
+            <p>
+                Plant and protect trees because they provide
+                oxygen, reduce pollution and create a healthier
+                environment for people and animals.
+            </p>
+
+        </div>
+
+
+        <!-- TIP 4 -->
+
+        <div class="tip-card">
+
+            <div class="tip-number">
+                4
+            </div>
+
+            <h2>💡 Save Electricity</h2>
+
+            <p>
+                Switch off lights, fans and electronic devices
+                when they are not being used. Use LED bulbs
+                to save energy.
+            </p>
+
+        </div>
+
+
+        <!-- TIP 5 -->
+
+        <div class="tip-card">
+
+            <div class="tip-number">
+                5
+            </div>
+
+            <h2>🛍️ Avoid Plastic</h2>
+
+            <p>
+                Use reusable shopping bags, bottles and
+                containers instead of single-use plastic
+                products.
+            </p>
+
+        </div>
+
+
+        <!-- TIP 6 -->
+
+        <div class="tip-card">
+
+            <div class="tip-number">
+                6
+            </div>
+
+            <h2>🚲 Use Green Transport</h2>
+
+            <p>
+                Walk, cycle or use public transport whenever
+                possible. This helps reduce air pollution
+                and carbon emissions.
+            </p>
+
+        </div>
+
+
+        <!-- TIP 7 -->
+
+        <div class="tip-card">
+
+            <div class="tip-number">
+                7
+            </div>
+
+            <h2>🥗 Reduce Food Waste</h2>
+
+            <p>
+                Take only the food you need and store leftovers
+                properly. Compost food scraps whenever
+                possible.
+            </p>
+
+        </div>
+
+
+        <!-- TIP 8 -->
+
+        <div class="tip-card">
+
+            <div class="tip-number">
+                8
+            </div>
+
+            <h2>🌍 Keep Your Surroundings Clean</h2>
+
+            <p>
+                Never throw waste on roads, parks or other
+                public places. Always use the correct dustbin
+                and encourage others to keep the environment clean.
+            </p>
+
+        </div>
+
+
+    </div>
+
+
+    <!-- =================================================
+         BOTTOM MESSAGE
+    ================================================== -->
+
+    <div class="eco-message">
+
+        <h2>🌍 Every Small Action Matters!</h2>
+
+        <p>
+            Start with one eco-friendly habit today and
+            encourage others to do the same.
+        </p>
+
+    </div>
+
+</main>
+
+
+<!-- =====================================================
+     FOOTER
+===================================================== -->
+
+<footer>
+
+    <p>
+        🌱 EcoLife — Small actions, big impact.
+    </p>
+
+</footer>
+
+</body>
+</html>
