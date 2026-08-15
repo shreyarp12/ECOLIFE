@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>EcoLife | Small Acts, Big Planet</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<body>
+
+
+<nav class="navbar">
+
+    <div class="logo">
+
+        <div class="logo-icon">
+            🌱
+        </div>
+
+        EcoLife
+
+    </div>
+
+
+    <div class="nav-links">
+
+        <a href="{{ url_for('index') }}">
+            Home
+        </a>
+
+        <a href="{{ url_for('quiz') }}">
+            Quiz
+        </a>
+
+        <a href="{{ url_for('tips') }}">
+            Tips
+        </a>
+
+        <a href="{{ url_for('challenge') }}">
+            Challenge
+        </a>
+
+        <a href="{{ url_for('feedback') }}">
+            Feedback
+        </a>
+
+        <a href="{{ url_for('about') }}">
+            About
+        </a>
+
+    </div>
+
+</nav>
+
+
+<section class="hero">
+
+
+    <div class="decor one">
+        🍃
+    </div>
+
+    <div class="decor two">
+        ✦
+    </div>
+
+    <div class="decor three">
+        🌱
+    </div>
+
+
+    <div class="hero-content">
+
+
+        <div class="brand-small">
+
+            <div class="leaf-icon">
+                🌿
+            </div>
+
+            <div>
+
+                <div>
+                    ECOLIFE
+                </div>
+
+                <span>
+                    Small acts, big planet.
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <h1>
+
+            Save the Earth,
+
+            <br>
+
+            <span class="highlight">
+                one habit
+            </span>
+
+            at a
+
+            <br>
+
+            time.
+
+        </h1>
+
+
+        <p class="hero-description">
+
+            Learn simple eco-friendly habits, test your knowledge
+            with fun quizzes, and complete daily challenges that
+            turn small actions into big changes.
+
+        </p>
+
+
+        <div class="name-section">
+
+            <label>
+                🌱 What should we call you?
+            </label>
+
+            <input
+                type="text"
+                id="userName"
+                class="name-input"
+                placeholder="e.g. leafy_luna"
+            >
+
+        </div>
+
+
+        <div class="hero-buttons">
+
+            <a
+                href="{{ url_for('quiz') }}"
+                class="btn primary-btn"
+                onclick="saveEcoName()">
+
+                ✨ Let's go!
+
+            </a>
+
+
+            <a
+                href="{{ url_for('challenge') }}"
+                class="btn secondary-btn">
+
+                🌱 Daily Challenge
+
+            </a>
+
+        </div>
+
+
+        <p style="
+            margin-top:18px;
+            font-size:13px;
+            color:#68635e;
+        ">
+
+            No password needed • Start your eco journey today 🌍
+
+        </p>
+
+
+    </div>
+
+
+    <!-- RIGHT CARD -->
+
+    <div class="impact-card">
+
+
+        <div class="planet">
+            🌍
+        </div>
+
+
+        <h2>
+            Small Actions
+        </h2>
+
+
+        <p>
+            Big Changes
+        </p>
+
+
+        <div class="mini-stats">
+
+            <div class="mini-stat">
+
+                <strong>
+                    5
+                </strong>
+
+                <small>
+                    Quiz
+                </small>
+
+            </div>
+
+
+            <div class="mini-stat">
+
+                <strong>
+                    6
+                </strong>
+
+                <small>
+                    Tips
+                </small>
+
+            </div>
+
+
+            <div class="mini-stat">
+
+                <strong>
+                    5
+                </strong>
+
+                <small>
+                    Challenges
+                </small>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+    <div class="streak">
+
+        🔥 Start your eco streak!
+
+    </div>
+
+
+</section>
+
+
+<!-- FEATURES -->
+
+<section class="features">
+
+
+    <div class="features-header">
+
+        <div>
+
+            <h2>
+                Explore EcoLife 🌱
+            </h2>
+
+            <p class="section-text">
+                Learn • Play • Act • Repeat
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="feature-grid">
+
+
+        <a
+            href="{{ url_for('quiz') }}"
+            class="feature-card">
+
+            <div class="feature-icon">
+                🧠
+            </div>
+
+            <h3>
+                Eco Quiz
+            </h3>
+
+            <p>
+                Answer fun questions and discover
+                how eco-friendly your knowledge is.
+            </p>
+
+        </a>
+
+
+        <a
+            href="{{ url_for('tips') }}"
+            class="feature-card">
+
+            <div class="feature-icon">
+                💡
+            </div>
+
+            <h3>
+                Eco Tips
+            </h3>
+
+            <p>
+                Discover easy habits you can use
+                at home, school and in your community.
+            </p>
+
+        </a>
+
+
+        <a
+            href="{{ url_for('challenge') }}"
+            class="feature-card">
+
+            <div class="feature-icon">
+                🎯
+            </div>
+
+            <h3>
+                Daily Challenge
+            </h3>
+
+            <p>
+                Complete one simple green action
+                every day and build your streak.
+            </p>
+
+        </a>
+
+
+        <a
+            href="{{ url_for('feedback') }}"
+            class="feature-card">
+
+            <div class="feature-icon">
+                💬
+            </div>
+
+            <h3>
+                Give Feedback
+            </h3>
+
+            <p>
+                Tell us what you learned and
+                how EcoLife can become better.
+            </p>
+
+        </a>
+
+
+    </div>
+
+</section>
+
+
+<!-- GREEN MESSAGE -->
+
+<section class="eco-message">
+
+    <h2>
+        🌍 One small habit can make a difference.
+    </h2>
+
+    <p>
+
+        EcoLife encourages students and communities
+        to learn about recycling, reduce waste and
+        make everyday choices that are better for our planet.
+
+    </p>
+
+</section>
+
+
+<footer>
+
+    <p>
+        🌱 EcoLife — Small acts, big planet.
+    </p>
+
+    <p>
+        Created by Shreya Patil & Komal Patil
+    </p>
+
+</footer>
+
+
+<script>
+
+function saveEcoName() {
+
+    const name =
+        document.getElementById("userName").value.trim();
+
+    if (name !== "") {
+
+        localStorage.setItem(
+            "ecolife_name",
+            name
+        );
+
+    }
+
+}
+
+window.addEventListener("load", function () {
+
+    const savedName =
+        localStorage.getItem("ecolife_name");
+
+    if (savedName) {
+
+        document.getElementById("userName").value =
+            savedName;
+
+    }
+
+});
+
+</script>
+
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+
+</body>
+
+</html>
