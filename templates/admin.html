@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Admin Dashboard | EcoLife</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+
+        .admin-container {
+            max-width: 1250px;
+            margin: auto;
+            padding: 60px 20px;
+        }
+
+        .admin-container h1 {
+            font-size: 45px;
+            font-weight: 900;
+            margin-bottom: 10px;
+        }
+
+        .section-text {
+            font-size: 20px;
+            color: #667085;
+            margin-bottom: 35px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 45px;
+        }
+
+        .stat-card {
+            background: #fffdf8;
+            border: 3px solid #222;
+            border-radius: 22px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 6px 6px 0 #222;
+        }
+
+        .stat-icon {
+            font-size: 38px;
+        }
+
+        .stat-card h3 {
+            font-size: 19px;
+            margin: 10px 0;
+        }
+
+        .stat-card strong {
+            font-size: 35px;
+        }
+
+        .admin-section {
+            background: #fffdf8;
+            border: 3px solid #222;
+            border-radius: 25px;
+            padding: 25px;
+            margin-bottom: 35px;
+            box-shadow: 7px 7px 0 #222;
+        }
+
+        .admin-section h2 {
+            font-size: 30px;
+            margin-bottom: 25px;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 700px;
+        }
+
+        th {
+            background: #43d5a0;
+            border: 2px solid #222;
+            padding: 14px;
+            font-size: 17px;
+        }
+
+        td {
+            border: 2px solid #ddd;
+            padding: 13px;
+            font-size: 16px;
+        }
+
+        tr:nth-child(even) {
+            background: #f7f5ef;
+        }
+
+        .admin-bottom {
+            text-align: center;
+            margin: 40px 0;
+        }
+
+        .danger-btn {
+            display: inline-block;
+            background: #ff8f8f;
+            border: 3px solid #222;
+            border-radius: 12px;
+            padding: 13px 25px;
+            color: #111;
+            text-decoration: none;
+            font-weight: 800;
+            box-shadow: 4px 4px 0 #222;
+        }
+
+        @media (max-width: 900px) {
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+        }
+
+        @media (max-width: 600px) {
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .admin-container h1 {
+                font-size: 34px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<nav class="navbar admin-nav">
+
+
+    <div class="logo">
+        🌱 EcoLife Admin
+    </div>
+
+
+    <div class="nav-links">
+
+        <a href="{{ url_for('index') }}">
+            Website
+        </a>
+
+        <a href="{{ url_for('admin_logout') }}">
+            Logout
+        </a>
+
+    </div>
+
+
+</nav>
+
+
+<main class="admin-container">
+
+
+    <h1>
+        📊 Admin Dashboard
+    </h1>
+
+
+    <p class="section-text">
+
+        Welcome,
+        <strong>
+            {{ session.get("admin_username") }}
+        </strong>!
+
+    </p>
+
+
+    <!-- STATISTICS -->
+
+    <div class="stats-grid">
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                👥
+            </div>
+
+            <h3>
+                Participants
+            </h3>
+
+            <strong>
+                {{ participant_count }}
+            </strong>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                🧠
+            </div>
+
+            <h3>
+                Average Quiz Score
+            </h3>
+
+            <strong>
+                {{ average_score }}%
+            </strong>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                ⭐
+            </div>
+
+            <h3>
+                Average Rating
+            </h3>
+
+            <strong>
+                {{ average_rating }}/5
+            </strong>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                🌱
+            </div>
+
+            <h3>
+                Challenges
+            </h3>
+
+            <strong>
+                {{ challenge_count }}
+            </strong>
+
+        </div>
+
+
+    </div>
+
+
+    <!-- QUIZ PARTICIPANTS -->
+
+    <section class="admin-section">
+
+
+        <h2>
+            🧠 Quiz Participants
+        </h2>
+
+
+        {% if participants %}
+
+
+        <div class="table-wrapper">
+
+
+            <table>
+
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            ID
+                        </th>
+
+                        <th>
+                            Name
+                        </th>
+
+                        <th>
+                            Score
+                        </th>
+
+                        <th>
+                            Percentage
+                        </th>
+
+                        <th>
+                            Date
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+
+                    {% for participant in participants %}
+
+                    <tr>
+
+                        <td>
+                            {{ participant.id }}
+                        </td>
+
+                        <td>
+                            {{ participant.name }}
+                        </td>
+
+                        <td>
+                            {{ participant.score }}/{{ participant.total }}
+                        </td>
+
+                        <td>
+                            {{ participant.percentage }}%
+                        </td>
+
+                        <td>
+                            {{ participant.created_at }}
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+
+                </tbody>
+
+
+            </table>
+
+
+        </div>
+
+
+        {% else %}
+
+        <p>
+            No quiz participants yet.
+        </p>
+
+        {% endif %}
+
+
+    </section>
+
+
+    <!-- FEEDBACK -->
+
+    <section class="admin-section">
+
+
+        <h2>
+            💬 Feedback
+        </h2>
+
+
+        {% if feedback_list %}
+
+
+        <div class="table-wrapper">
+
+
+            <table>
+
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            Name
+                        </th>
+
+                        <th>
+                            Rating
+                        </th>
+
+                        <th>
+                            Comment
+                        </th>
+
+                        <th>
+                            Date
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+
+                    {% for feedback in feedback_list %}
+
+
+                    <tr>
+
+                        <td>
+                            {{ feedback.name or "Anonymous" }}
+                        </td>
+
+                        <td>
+                            {{ "⭐" * feedback.rating }}
+                        </td>
+
+                        <td>
+                            {{ feedback.comment or "No comment" }}
+                        </td>
+
+                        <td>
+                            {{ feedback.created_at }}
+                        </td>
+
+                    </tr>
+
+
+                    {% endfor %}
+
+
+                </tbody>
+
+
+            </table>
+
+
+        </div>
+
+
+        {% else %}
+
+        <p>
+            No feedback yet.
+        </p>
+
+        {% endif %}
+
+
+    </section>
+
+
+    <!-- DAILY CHALLENGES -->
+
+    <section class="admin-section">
+
+
+        <h2>
+            🌱 Daily Challenges
+        </h2>
+
+
+        {% if challenges %}
+
+
+        <div class="table-wrapper">
+
+
+            <table>
+
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            Name
+                        </th>
+
+                        <th>
+                            Challenge
+                        </th>
+
+                        <th>
+                            Completed
+                        </th>
+
+                        <th>
+                            Date
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+
+                    {% for challenge in challenges %}
+
+
+                    <tr>
+
+                        <td>
+                            {{ challenge.name }}
+                        </td>
+
+                        <td>
+                            {{ challenge.challenge }}
+                        </td>
+
+                        <td>
+
+                            {% if challenge.completed == 1
+                                  or challenge.completed == "1" %}
+
+                                ✅ Yes
+
+                            {% else %}
+
+                                ❌ No
+
+                            {% endif %}
+
+                        </td>
+
+                        <td>
+                            {{ challenge.created_at }}
+                        </td>
+
+                    </tr>
+
+
+                    {% endfor %}
+
+
+                </tbody>
+
+
+            </table>
+
+
+        </div>
+
+
+        {% else %}
+
+        <p>
+            No challenge data yet.
+        </p>
+
+        {% endif %}
+
+
+    </section>
+
+
+    <div class="admin-bottom">
+
+        <a
+            href="{{ url_for('admin_logout') }}"
+            class="danger-btn"
+        >
+            Logout
+        </a>
+
+    </div>
+
+
+</main>
+
+
+<footer>
+
+    <p>
+        🔐 EcoLife Admin Dashboard
+    </p>
+
+</footer>
+
+
+</body>
+
+</html>
