@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>About EcoLife</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<body>
+
+<nav class="navbar">
+
+    <div class="logo">🌱 EcoLife</div>
+
+    <div class="nav-links">
+
+        <a href="{{ url_for('index') }}">Home</a>
+        <a href="{{ url_for('quiz') }}">Quiz</a>
+        <a href="{{ url_for('tips') }}">Tips</a>
+        <a href="{{ url_for('challenge') }}">Challenge</a>
+        <a href="{{ url_for('feedback') }}">Feedback</a>
+        <a href="{{ url_for('about') }}">About</a>
+
+    </div>
+
+</nav>
+
+
+<main class="page-container">
+
+    <div class="about-card">
+
+        <div class="about-icon">🌍</div>
+
+        <h1>About EcoLife</h1>
+
+        <p>
+
+            EcoLife is a Local Eco-Awareness project designed to
+            increase environmental awareness among students and
+            members of the local community.
+
+        </p>
+
+        <p>
+
+            The website provides short environmental quizzes,
+            useful eco-friendly tips, daily environmental challenges,
+            and a feedback system.
+
+        </p>
+
+    </div>
+
+
+    <div class="about-grid">
+
+        <div class="about-info">
+
+            <h2>🎯 Project Objective</h2>
+
+            <p>
+
+                To educate people about recycling, conservation,
+                pollution reduction and simple sustainable habits
+                through an interactive website.
+
+            </p>
+
+        </div>
+
+
+        <div class="about-info">
+
+            <h2>📋 Fieldwork</h2>
+
+            <p>
+
+                A paper-based survey can be conducted with
+                20 or more students or neighbors to understand
+                their environmental knowledge.
+
+            </p>
+
+        </div>
+
+
+        <div class="about-info">
+
+            <h2>🧑‍🤝‍🧑 Project Team</h2>
+
+            <p>
+                <strong>Shreya Patil</strong>
+            </p>
+
+            <p>
+                <strong>Komal Patil</strong>
+            </p>
+
+        </div>
+
+
+        <div class="about-info">
+
+            <h2>🏫 College</h2>
+
+            <p>
+
+                Mahatma Education Society's
+                Pillai HOC College of Arts, Science &
+                Commerce (Autonomous)
+
+            </p>
+
+        </div>
+
+    </div>
+
+</main>
+
+
+<footer>
+
+    <p>🌱 EcoLife – Local Eco-Awareness Project</p>
+
+</footer>
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+
+</body>
+</html>
