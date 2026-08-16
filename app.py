@@ -3,21 +3,31 @@ import sqlite3
 from datetime import datetime
 import os
 
+# =========================================================
+# FLASK APP
+# =========================================================
+
 app = Flask(__name__)
 
-# =========================================================
-# FLASK SECRET KEY
-# =========================================================
+# Secret key
+app.secret_key = os.environ.get(
+    "SECRET_KEY",
+    "ecolife-secret-key-2026"
+)
 
-app.secret_key = "ecolife-secret-key-2026"
+# Session security
+app.config["SESSION_COOKIE_HTTPONLY"] = True
+app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
 
 
 # =========================================================
 # DATABASE
 # =========================================================
 
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
 DATABASE = os.path.join(
-    os.path.dirname(os.path.abspath(__file__)),
+    BASE_DIR,
     "database.db"
 )
 
@@ -30,15 +40,21 @@ def get_db():
 
 # =========================================================
 # ADMIN LOGIN DETAILS
-# CHANGE THESE IF YOU WANT
 # =========================================================
 
-ADMIN_USERNAME = "admin"
-ADMIN_PASSWORD = "ecolife123"
+ADMIN_USERNAME = os.environ.get(
+    "ADMIN_USERNAME",
+    "admin"
+)
+
+ADMIN_PASSWORD = os.environ.get(
+    "ADMIN_PASSWORD",
+    "ecolife123"
+)
 
 
 # =========================================================
-# DATABASE TABLES
+# DATABASE INITIALIZATION
 # =========================================================
 
 def init_db():
@@ -46,7 +62,7 @@ def init_db():
     conn = get_db()
 
     # -----------------------------------------------------
-    # Quiz Results
+    # QUIZ RESULTS
     # -----------------------------------------------------
 
     conn.execute("""
@@ -61,7 +77,7 @@ def init_db():
     """)
 
     # -----------------------------------------------------
-    # Daily Challenges
+    # DAILY CHALLENGES
     # -----------------------------------------------------
 
     conn.execute("""
@@ -75,7 +91,7 @@ def init_db():
     """)
 
     # -----------------------------------------------------
-    # Feedback
+    # FEEDBACK
     # -----------------------------------------------------
 
     conn.execute("""
@@ -89,7 +105,7 @@ def init_db():
     """)
 
     # -----------------------------------------------------
-    # Admin Users
+    # ADMIN USERS
     # -----------------------------------------------------
 
     conn.execute("""
@@ -100,23 +116,43 @@ def init_db():
         )
     """)
 
-    # Add default admin if it does not already exist
+    # -----------------------------------------------------
+    # CREATE DEFAULT ADMIN
+    # -----------------------------------------------------
+
     existing_admin = conn.execute(
-        "SELECT * FROM admin_users WHERE username = ?",
+        """
+        SELECT *
+        FROM admin_users
+        WHERE username = ?
+        """,
         (ADMIN_USERNAME,)
     ).fetchone()
 
     if not existing_admin:
+
         conn.execute(
             """
-            INSERT INTO admin_users (username, password)
+            INSERT INTO admin_users
+            (username, password)
             VALUES (?, ?)
             """,
-            (ADMIN_USERNAME, ADMIN_PASSWORD)
+            (
+                ADMIN_USERNAME,
+                ADMIN_PASSWORD
+            )
         )
 
     conn.commit()
     conn.close()
+
+
+# =========================================================
+# IMPORTANT:
+# INITIALIZE DATABASE WHEN FLASK/GUNICORN STARTS
+# =========================================================
+
+init_db()
 
 
 # =========================================================
@@ -125,11 +161,14 @@ def init_db():
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+
+    return render_template(
+        "index.html"
+    )
 
 
 # =========================================================
-# QUIZ PAGE
+# QUIZ
 # =========================================================
 
 @app.route("/quiz", methods=["GET", "POST"])
@@ -139,7 +178,6 @@ def quiz():
     submitted = False
     participant_name = ""
 
-    # Correct answers
     correct_answers = {
         "q1": "recycle",
         "q2": "cloth",
@@ -151,22 +189,38 @@ def quiz():
     if request.method == "POST":
 
         participant_name = request.form.get(
-            "name", ""
+            "name",
+            ""
         ).strip()
 
-        # Validate name
+        # -------------------------------------------------
+        # VALIDATE NAME
+        # -------------------------------------------------
+
         if not participant_name:
-            flash("🌱 Please enter your name before submitting the quiz.")
-            return redirect(url_for("quiz"))
+
+            flash(
+                "🌱 Please enter your name before submitting the quiz."
+            )
+
+            return redirect(
+                url_for("quiz")
+            )
+
+        # -------------------------------------------------
+        # CALCULATE SCORE
+        # -------------------------------------------------
 
         score = 0
 
-        # Check answers
         for question, correct_answer in correct_answers.items():
 
-            user_answer = request.form.get(question)
+            user_answer = request.form.get(
+                question
+            )
 
             if user_answer == correct_answer:
+
                 score += 1
 
         total = len(correct_answers)
@@ -177,38 +231,55 @@ def quiz():
         )
 
         # -------------------------------------------------
-        # SAVE QUIZ RESULT
+        # SAVE RESULT
         # -------------------------------------------------
 
-        conn = get_db()
+        try:
 
-        conn.execute(
-            """
-            INSERT INTO quiz_results
-            (
-                name,
-                score,
-                total,
-                percentage,
-                created_at
-            )
-            VALUES (?, ?, ?, ?, ?)
-            """,
-            (
-                participant_name,
-                score,
-                total,
-                percentage,
-                datetime.now().strftime(
-                    "%Y-%m-%d %H:%M:%S"
+            conn = get_db()
+
+            conn.execute(
+                """
+                INSERT INTO quiz_results
+                (
+                    name,
+                    score,
+                    total,
+                    percentage,
+                    created_at
+                )
+                VALUES (?, ?, ?, ?, ?)
+                """,
+                (
+                    participant_name,
+                    score,
+                    total,
+                    percentage,
+                    datetime.now().strftime(
+                        "%Y-%m-%d %H:%M:%S"
+                    )
                 )
             )
-        )
 
-        conn.commit()
-        conn.close()
+            conn.commit()
+            conn.close()
 
-        submitted = True
+            submitted = True
+
+            flash(
+                "🌱 Quiz submitted successfully!"
+            )
+
+        except Exception as e:
+
+            print(
+                "QUIZ DATABASE ERROR:",
+                e
+            )
+
+            flash(
+                "❌ Unable to save quiz result. Please try again."
+            )
 
     return render_template(
         "quiz.html",
@@ -224,7 +295,10 @@ def quiz():
 
 @app.route("/tips")
 def tips():
-    return render_template("tips.html")
+
+    return render_template(
+        "tips.html"
+    )
 
 
 # =========================================================
@@ -237,77 +311,133 @@ def challenge():
     if request.method == "POST":
 
         name = request.form.get(
-            "name", ""
+            "name",
+            ""
         ).strip()
 
         challenge_name = request.form.get(
-            "challenge", ""
+            "challenge",
+            ""
         ).strip()
 
         completed = request.form.get(
-            "completed", ""
+            "completed",
+            ""
         ).strip()
 
-        # Validate name
+        # -------------------------------------------------
+        # VALIDATE NAME
+        # -------------------------------------------------
+
         if not name:
-            flash("🌱 Please enter your name.")
-            return redirect(url_for("challenge"))
 
-        # Validate challenge
+            flash(
+                "🌱 Please enter your name."
+            )
+
+            return redirect(
+                url_for("challenge")
+            )
+
+        # -------------------------------------------------
+        # VALIDATE CHALLENGE
+        # -------------------------------------------------
+
         if not challenge_name:
-            flash("🌱 Please select today's eco challenge.")
-            return redirect(url_for("challenge"))
 
-        # Validate completion
+            flash(
+                "🌱 Please select today's eco challenge."
+            )
+
+            return redirect(
+                url_for("challenge")
+            )
+
+        # -------------------------------------------------
+        # VALIDATE COMPLETION
+        # -------------------------------------------------
+
         if completed == "":
-            flash("🌱 Please tell us whether you completed it.")
-            return redirect(url_for("challenge"))
 
-        # Convert Yes/No to 1/0
+            flash(
+                "🌱 Please tell us whether you completed it."
+            )
+
+            return redirect(
+                url_for("challenge")
+            )
+
+        # -------------------------------------------------
+        # CONVERT YES / NO TO 1 / 0
+        # -------------------------------------------------
+
         if completed.lower() in [
             "yes",
             "1",
             "true",
             "completed"
         ]:
+
             completed_value = 1
+
         else:
+
             completed_value = 0
 
-        # Save challenge
-        conn = get_db()
+        # -------------------------------------------------
+        # SAVE CHALLENGE
+        # -------------------------------------------------
 
-        conn.execute(
-            """
-            INSERT INTO challenges
-            (
-                name,
-                challenge,
-                completed,
-                created_at
-            )
-            VALUES (?, ?, ?, ?)
-            """,
-            (
-                name,
-                challenge_name,
-                completed_value,
-                datetime.now().strftime(
-                    "%Y-%m-%d %H:%M:%S"
+        try:
+
+            conn = get_db()
+
+            conn.execute(
+                """
+                INSERT INTO challenges
+                (
+                    name,
+                    challenge,
+                    completed,
+                    created_at
+                )
+                VALUES (?, ?, ?, ?)
+                """,
+                (
+                    name,
+                    challenge_name,
+                    completed_value,
+                    datetime.now().strftime(
+                        "%Y-%m-%d %H:%M:%S"
+                    )
                 )
             )
+
+            conn.commit()
+            conn.close()
+
+            flash(
+                "🌱 Your eco challenge has been saved successfully!"
+            )
+
+        except Exception as e:
+
+            print(
+                "CHALLENGE DATABASE ERROR:",
+                e
+            )
+
+            flash(
+                "❌ Unable to save challenge. Please try again."
+            )
+
+        return redirect(
+            url_for("challenge")
         )
 
-        conn.commit()
-        conn.close()
-
-        flash(
-            "🌱 Your eco challenge has been saved successfully!"
-        )
-
-        return redirect(url_for("challenge"))
-
-    return render_template("challenge.html")
+    return render_template(
+        "challenge.html"
+    )
 
 
 # =========================================================
@@ -320,67 +450,118 @@ def feedback():
     if request.method == "POST":
 
         name = request.form.get(
-            "name", ""
+            "name",
+            ""
         ).strip()
 
         rating = request.form.get(
-            "rating", ""
+            "rating",
+            ""
         ).strip()
 
         comment = request.form.get(
-            "comment", ""
+            "comment",
+            ""
         ).strip()
 
-        # Validate rating
+        # -------------------------------------------------
+        # VALIDATE RATING
+        # -------------------------------------------------
+
         if not rating:
-            flash("⭐ Please select a rating.")
-            return redirect(url_for("feedback"))
+
+            flash(
+                "⭐ Please select a rating."
+            )
+
+            return redirect(
+                url_for("feedback")
+            )
 
         try:
-            rating_value = int(rating)
-        except ValueError:
-            flash("⭐ Invalid rating.")
-            return redirect(url_for("feedback"))
 
-        # Validate rating range
-        if rating_value < 1 or rating_value > 5:
-            flash("⭐ Rating must be between 1 and 5.")
-            return redirect(url_for("feedback"))
-
-        # Save feedback
-        conn = get_db()
-
-        conn.execute(
-            """
-            INSERT INTO feedback
-            (
-                name,
-                rating,
-                comment,
-                created_at
+            rating_value = int(
+                rating
             )
-            VALUES (?, ?, ?, ?)
-            """,
-            (
-                name,
-                rating_value,
-                comment,
-                datetime.now().strftime(
-                    "%Y-%m-%d %H:%M:%S"
+
+        except ValueError:
+
+            flash(
+                "⭐ Invalid rating."
+            )
+
+            return redirect(
+                url_for("feedback")
+            )
+
+        # -------------------------------------------------
+        # VALIDATE RATING RANGE
+        # -------------------------------------------------
+
+        if rating_value < 1 or rating_value > 5:
+
+            flash(
+                "⭐ Rating must be between 1 and 5."
+            )
+
+            return redirect(
+                url_for("feedback")
+            )
+
+        # -------------------------------------------------
+        # SAVE FEEDBACK
+        # -------------------------------------------------
+
+        try:
+
+            conn = get_db()
+
+            conn.execute(
+                """
+                INSERT INTO feedback
+                (
+                    name,
+                    rating,
+                    comment,
+                    created_at
+                )
+                VALUES (?, ?, ?, ?)
+                """,
+                (
+                    name,
+                    rating_value,
+                    comment,
+                    datetime.now().strftime(
+                        "%Y-%m-%d %H:%M:%S"
+                    )
                 )
             )
+
+            conn.commit()
+            conn.close()
+
+            flash(
+                "💚 Thank you for your feedback!"
+            )
+
+        except Exception as e:
+
+            print(
+                "FEEDBACK DATABASE ERROR:",
+                e
+            )
+
+            flash(
+                "❌ Unable to save feedback. Please try again."
+            )
+
+        return redirect(
+            url_for("feedback")
         )
 
-        conn.commit()
-        conn.close()
-
-        flash(
-            "💚 Thank you for your feedback!"
-        )
-
-        return redirect(url_for("feedback"))
-
-    return render_template("feedback.html")
+    return render_template(
+        "feedback.html"
+    )
 
 
 # =========================================================
@@ -389,52 +570,105 @@ def feedback():
 
 @app.route("/about")
 def about():
-    return render_template("about.html")
+
+    return render_template(
+        "about.html"
+    )
 
 
 # =========================================================
 # ADMIN LOGIN
 # =========================================================
+#
+# BOTH URLs WORK:
+#
+# /admin/login
+# /admin_login
+#
+# This fixes the 404 you previously saw on Render.
+# =========================================================
 
-@app.route("/admin/login", methods=["GET", "POST"])
+@app.route(
+    "/admin/login",
+    methods=["GET", "POST"]
+)
+@app.route(
+    "/admin_login",
+    methods=["GET", "POST"]
+)
 def admin_login():
 
     if request.method == "POST":
 
         username = request.form.get(
-            "username", ""
+            "username",
+            ""
         ).strip()
 
         password = request.form.get(
-            "password", ""
+            "password",
+            ""
         ).strip()
 
-        conn = get_db()
+        try:
 
-        admin = conn.execute(
-            """
-            SELECT *
-            FROM admin_users
-            WHERE username = ?
-            AND password = ?
-            """,
-            (username, password)
-        ).fetchone()
+            conn = get_db()
 
-        conn.close()
+            admin = conn.execute(
+                """
+                SELECT *
+                FROM admin_users
+                WHERE username = ?
+                AND password = ?
+                """,
+                (
+                    username,
+                    password
+                )
+            ).fetchone()
+
+            conn.close()
+
+        except Exception as e:
+
+            print(
+                "ADMIN LOGIN DATABASE ERROR:",
+                e
+            )
+
+            flash(
+                "❌ Database error. Please try again."
+            )
+
+            return render_template(
+                "admin_login.html"
+            )
+
+        # -------------------------------------------------
+        # LOGIN SUCCESS
+        # -------------------------------------------------
 
         if admin:
 
             session["admin_logged_in"] = True
+
             session["admin_username"] = username
 
             return redirect(
                 url_for("admin")
             )
 
-        flash("❌ Invalid admin username or password.")
+        # -------------------------------------------------
+        # LOGIN FAILED
+        # -------------------------------------------------
 
-    return render_template("admin_login.html")
+        flash(
+            "❌ Invalid admin username or password."
+        )
+
+    return render_template(
+        "admin_login.html"
+    )
 
 
 # =========================================================
@@ -444,120 +678,156 @@ def admin_login():
 @app.route("/admin")
 def admin():
 
-    # Check login
-    if not session.get("admin_logged_in"):
+    # -----------------------------------------------------
+    # CHECK ADMIN LOGIN
+    # -----------------------------------------------------
+
+    if not session.get(
+        "admin_logged_in"
+    ):
+
         return redirect(
             url_for("admin_login")
         )
 
-    conn = get_db()
+    try:
 
-    # -----------------------------------------------------
-    # PARTICIPANT COUNT
-    # -----------------------------------------------------
+        conn = get_db()
 
-    participant_count = conn.execute(
-        """
-        SELECT COUNT(*)
-        FROM quiz_results
-        """
-    ).fetchone()[0]
+        # -------------------------------------------------
+        # PARTICIPANT COUNT
+        # -------------------------------------------------
 
-    # -----------------------------------------------------
-    # AVERAGE QUIZ SCORE
-    # -----------------------------------------------------
+        participant_count = conn.execute(
+            """
+            SELECT COUNT(*)
+            FROM quiz_results
+            """
+        ).fetchone()[0]
 
-    average_score = conn.execute(
-        """
-        SELECT AVG(percentage)
-        FROM quiz_results
-        """
-    ).fetchone()[0]
+        # -------------------------------------------------
+        # AVERAGE QUIZ SCORE
+        # -------------------------------------------------
 
-    if average_score is None:
-        average_score = 0
-    else:
-        average_score = round(
-            average_score,
-            2
+        average_score = conn.execute(
+            """
+            SELECT AVG(percentage)
+            FROM quiz_results
+            """
+        ).fetchone()[0]
+
+        if average_score is None:
+
+            average_score = 0
+
+        else:
+
+            average_score = round(
+                average_score,
+                2
+            )
+
+        # -------------------------------------------------
+        # AVERAGE RATING
+        # -------------------------------------------------
+
+        average_rating = conn.execute(
+            """
+            SELECT AVG(rating)
+            FROM feedback
+            """
+        ).fetchone()[0]
+
+        if average_rating is None:
+
+            average_rating = 0
+
+        else:
+
+            average_rating = round(
+                average_rating,
+                2
+            )
+
+        # -------------------------------------------------
+        # CHALLENGE COUNT
+        # -------------------------------------------------
+
+        challenge_count = conn.execute(
+            """
+            SELECT COUNT(*)
+            FROM challenges
+            """
+        ).fetchone()[0]
+
+        # -------------------------------------------------
+        # QUIZ PARTICIPANTS
+        # -------------------------------------------------
+
+        participants = conn.execute(
+            """
+            SELECT *
+            FROM quiz_results
+            ORDER BY id DESC
+            """
+        ).fetchall()
+
+        # -------------------------------------------------
+        # FEEDBACK
+        # -------------------------------------------------
+
+        feedback_list = conn.execute(
+            """
+            SELECT *
+            FROM feedback
+            ORDER BY id DESC
+            """
+        ).fetchall()
+
+        # -------------------------------------------------
+        # CHALLENGES
+        # -------------------------------------------------
+
+        challenges = conn.execute(
+            """
+            SELECT *
+            FROM challenges
+            ORDER BY id DESC
+            """
+        ).fetchall()
+
+        conn.close()
+
+    except Exception as e:
+
+        print(
+            "ADMIN DASHBOARD DATABASE ERROR:",
+            e
         )
 
-    # -----------------------------------------------------
-    # AVERAGE RATING
-    # -----------------------------------------------------
-
-    average_rating = conn.execute(
-        """
-        SELECT AVG(rating)
-        FROM feedback
-        """
-    ).fetchone()[0]
-
-    if average_rating is None:
-        average_rating = 0
-    else:
-        average_rating = round(
-            average_rating,
-            2
+        flash(
+            "❌ Unable to load admin dashboard."
         )
 
-    # -----------------------------------------------------
-    # CHALLENGE COUNT
-    # -----------------------------------------------------
-
-    challenge_count = conn.execute(
-        """
-        SELECT COUNT(*)
-        FROM challenges
-        """
-    ).fetchone()[0]
-
-    # -----------------------------------------------------
-    # QUIZ PARTICIPANTS
-    # -----------------------------------------------------
-
-    participants = conn.execute(
-        """
-        SELECT *
-        FROM quiz_results
-        ORDER BY id DESC
-        """
-    ).fetchall()
-
-    # -----------------------------------------------------
-    # FEEDBACK
-    # -----------------------------------------------------
-
-    feedback_list = conn.execute(
-        """
-        SELECT *
-        FROM feedback
-        ORDER BY id DESC
-        """
-    ).fetchall()
-
-    # -----------------------------------------------------
-    # CHALLENGES
-    # -----------------------------------------------------
-
-    challenges = conn.execute(
-        """
-        SELECT *
-        FROM challenges
-        ORDER BY id DESC
-        """
-    ).fetchall()
-
-    conn.close()
+        return redirect(
+            url_for("index")
+        )
 
     return render_template(
         "admin.html",
+
         participant_count=participant_count,
+
         average_score=average_score,
+
         average_rating=average_rating,
+
         challenge_count=challenge_count,
+
         participants=participants,
+
         feedback_list=feedback_list,
+
         challenges=challenges
     )
 
@@ -579,9 +849,32 @@ def admin_logout():
         None
     )
 
+    flash(
+        "You have been logged out."
+    )
+
     return redirect(
         url_for("index")
     )
+
+
+# =========================================================
+# HEALTH CHECK
+# =========================================================
+#
+# Useful for checking whether Render is running Flask.
+#
+# Open:
+# https://YOUR-APP.onrender.com/health
+# =========================================================
+
+@app.route("/health")
+def health():
+
+    return {
+        "status": "OK",
+        "application": "EcoLife"
+    }, 200
 
 
 # =========================================================
@@ -592,27 +885,106 @@ def admin_logout():
 def page_not_found(error):
 
     return """
-    <div style="
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>EcoLife - 404</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+
+    <body style="
         text-align:center;
         margin-top:100px;
-        font-family:Arial;
+        font-family:Arial,sans-serif;
+        padding:20px;
     ">
+
         <h1>404 - Page Not Found</h1>
-        <p>The page you are looking for does not exist.</p>
-        <a href="/">Go Home</a>
-    </div>
+
+        <p>
+            The page you are looking for does not exist.
+        </p>
+
+        <p>
+            <a href="/">
+                🌱 Go Home
+            </a>
+        </p>
+
+        <p>
+            <a href="/admin/login">
+                🔐 Admin Login
+            </a>
+        </p>
+
+    </body>
+    </html>
     """, 404
 
 
 # =========================================================
-# START APPLICATION
+# 500 ERROR
+# =========================================================
+
+@app.errorhandler(500)
+def internal_server_error(error):
+
+    print(
+        "INTERNAL SERVER ERROR:",
+        error
+    )
+
+    return """
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>EcoLife - Server Error</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+
+    <body style="
+        text-align:center;
+        margin-top:100px;
+        font-family:Arial,sans-serif;
+        padding:20px;
+    ">
+
+        <h1>🌱 EcoLife</h1>
+
+        <h2>Something went wrong</h2>
+
+        <p>
+            The server encountered an error.
+        </p>
+
+        <p>
+            Please try again.
+        </p>
+
+        <p>
+            <a href="/">
+                🏠 Go Home
+            </a>
+        </p>
+
+    </body>
+    </html>
+    """, 500
+
+
+# =========================================================
+# LOCAL DEVELOPMENT
 # =========================================================
 
 if __name__ == "__main__":
-    init_db()
 
     app.run(
         host="0.0.0.0",
-        port=5000,
-        debug=True
+        port=int(
+            os.environ.get(
+                "PORT",
+                5000
+            )
+        ),
+        debug=False
     )
