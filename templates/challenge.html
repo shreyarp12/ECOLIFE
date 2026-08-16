@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>EcoLife - Daily Challenge</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<body>
+
+<nav class="navbar">
+
+    <div class="logo">
+
+        <div class="logo-icon">
+            🌱
+        </div>
+
+        ECOLIFE
+
+    </div>
+
+
+    <div class="nav-links">
+
+        <a href="/">Home</a>
+        <a href="/quiz">Quiz</a>
+        <a href="/tips">Tips</a>
+        <a href="/challenge">Challenge</a>
+        <a href="/feedback">Feedback</a>
+        <a href="/about">About</a>
+
+    </div>
+
+</nav>
+
+
+<div class="challenge-page">
+
+
+    <!-- HERO -->
+
+    <section class="challenge-hero">
+
+        <div class="hero-icon">
+            🌱
+        </div>
+
+        <div class="small-heading">
+            DAILY ECO CHALLENGE
+        </div>
+
+        <h1>
+            Make One Green Change Today
+        </h1>
+
+        <p class="hero-text">
+            Small actions every day can make a big difference
+            for our planet.
+        </p>
+
+        <div class="journey">
+            🌍 Start your eco journey today!
+        </div>
+
+    </section>
+
+
+    <!-- FLASH MESSAGE -->
+
+    {% with messages = get_flashed_messages() %}
+
+        {% if messages %}
+
+            {% for message in messages %}
+
+                <div class="success-message">
+                    {{ message }}
+                </div>
+
+            {% endfor %}
+
+        {% endif %}
+
+    {% endwith %}
+
+
+    <!-- CARD -->
+
+    <div class="challenge-card">
+
+
+        <!-- FORM -->
+
+        <form
+            method="POST"
+            action="/challenge"
+        >
+
+
+            <!-- NAME -->
+
+            <div class="form-section">
+
+                <label for="name">
+                    Your Name
+                </label>
+
+                <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    placeholder="Enter your name"
+                    required
+                >
+
+                <p class="help-text">
+                    Tell us who is taking today's challenge.
+                </p>
+
+            </div>
+
+
+            <!-- CHALLENGE -->
+
+            <div class="form-section">
+
+                <h2>
+                    🌿 Choose Today's Challenge
+                </h2>
+
+                <p class="section-description">
+                    Pick one eco-friendly activity.
+                </p>
+
+
+                <div class="challenge-options">
+
+
+                    <label class="challenge-option">
+
+                        <input
+                            type="radio"
+                            name="challenge"
+                            value="Avoid plastic bags"
+                            required
+                        >
+
+                        <div>
+
+                            <strong>
+                                🛍️ Avoid Plastic Bags
+                            </strong>
+
+                            <span>
+                                Use a reusable cloth bag today.
+                            </span>
+
+                        </div>
+
+                    </label>
+
+
+                    <label class="challenge-option">
+
+                        <input
+                            type="radio"
+                            name="challenge"
+                            value="Save water"
+                        >
+
+                        <div>
+
+                            <strong>
+                                💧 Save Water
+                            </strong>
+
+                            <span>
+                                Turn off the tap when not needed.
+                            </span>
+
+                        </div>
+
+                    </label>
+
+
+                    <label class="challenge-option">
+
+                        <input
+                            type="radio"
+                            name="challenge"
+                            value="Plant a tree"
+                        >
+
+                        <div>
+
+                            <strong>
+                                🌳 Plant a Tree
+                            </strong>
+
+                            <span>
+                                Plant or care for a tree today.
+                            </span>
+
+                        </div>
+
+                    </label>
+
+
+                    <label class="challenge-option">
+
+                        <input
+                            type="radio"
+                            name="challenge"
+                            value="Save electricity"
+                        >
+
+                        <div>
+
+                            <strong>
+                                💡 Save Electricity
+                            </strong>
+
+                            <span>
+                                Switch off unused lights and fans.
+                            </span>
+
+                        </div>
+
+                    </label>
+
+
+                </div>
+
+            </div>
+
+
+            <!-- COMPLETION -->
+
+            <div class="form-section">
+
+                <h2>
+                    ✅ Did You Complete It?
+                </h2>
+
+                <p class="section-description">
+                    Tell us how you did.
+                </p>
+
+
+                <div class="completion-options">
+
+
+                    <label>
+
+                        <input
+                            type="radio"
+                            name="completed"
+                            value="Yes"
+                            required
+                        >
+
+                        🌟 Yes, I completed it!
+
+                    </label>
+
+
+                    <label>
+
+                        <input
+                            type="radio"
+                            name="completed"
+                            value="No"
+                        >
+
+                        🌱 Not yet, I'll try!
+
+                    </label>
+
+
+                </div>
+
+            </div>
+
+
+            <!-- BUTTON -->
+
+            <button
+                type="submit"
+                class="save-button"
+            >
+                Submit Challenge 🌱
+            </button>
+
+
+        </form>
+
+    </div>
+
+
+    <!-- BOTTOM -->
+
+    <section class="challenge-bottom">
+
+        <div class="bottom-icon">
+            🌎
+        </div>
+
+        <h2>
+            Every Action Matters
+        </h2>
+
+        <p>
+            Your small eco-friendly choices today
+            can help create a healthier planet tomorrow.
+        </p>
+
+    </section>
+
+
+</div>
+
+
+<footer>
+
+    <p>
+        🌱 ECOLIFE — Small actions, big impact.
+    </p>
+
+</footer>
+
+
+</body>
+</html>

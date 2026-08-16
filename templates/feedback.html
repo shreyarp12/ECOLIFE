@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>EcoLife - Feedback</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<body>
+
+<nav class="navbar">
+
+    <div class="logo">
+        <div class="logo-icon">🌱</div>
+        ECOLIFE
+    </div>
+
+    <div class="nav-links">
+
+        <a href="/">Home</a>
+        <a href="/quiz">Quiz</a>
+        <a href="/tips">Tips</a>
+        <a href="/challenge">Challenge</a>
+        <a href="/feedback">Feedback</a>
+        <a href="/about">About</a>
+
+    </div>
+
+</nav>
+
+
+<div class="page-container">
+
+    <h1>💚 Feedback</h1>
+
+    <p class="section-text">
+        Tell us what you think about EcoLife.
+    </p>
+
+
+    <!-- SUCCESS / ERROR MESSAGE -->
+
+    {% with messages = get_flashed_messages() %}
+
+        {% if messages %}
+
+            {% for message in messages %}
+
+                <div class="alert">
+                    {{ message }}
+                </div>
+
+            {% endfor %}
+
+        {% endif %}
+
+    {% endwith %}
+
+
+    <!-- FORM -->
+
+    <form
+        method="POST"
+        action="/feedback"
+        class="feedback-form"
+    >
+
+        <div class="input-group">
+
+            <label for="name">
+                Your Name
+            </label>
+
+            <input
+                type="text"
+                id="name"
+                name="name"
+                placeholder="Enter your name"
+            >
+
+        </div>
+
+
+        <div class="input-group">
+
+            <label>
+                Rate EcoLife
+            </label>
+
+            <div class="stars">
+
+                <label>
+                    <input
+                        type="radio"
+                        name="rating"
+                        value="1"
+                        required
+                    >
+                    ⭐
+                </label>
+
+                <label>
+                    <input
+                        type="radio"
+                        name="rating"
+                        value="2"
+                    >
+                    ⭐⭐
+                </label>
+
+                <label>
+                    <input
+                        type="radio"
+                        name="rating"
+                        value="3"
+                    >
+                    ⭐⭐⭐
+                </label>
+
+                <label>
+                    <input
+                        type="radio"
+                        name="rating"
+                        value="4"
+                    >
+                    ⭐⭐⭐⭐
+                </label>
+
+                <label>
+                    <input
+                        type="radio"
+                        name="rating"
+                        value="5"
+                    >
+                    ⭐⭐⭐⭐⭐
+                </label>
+
+            </div>
+
+        </div>
+
+
+        <div class="input-group">
+
+            <label for="comment">
+                Your Feedback
+            </label>
+
+            <textarea
+                id="comment"
+                name="comment"
+                placeholder="Write your feedback here..."
+            ></textarea>
+
+        </div>
+
+
+        <button
+            type="submit"
+            class="btn primary-btn"
+        >
+            Submit Feedback 💚
+        </button>
+
+    </form>
+
+</div>
+
+
+<footer>
+
+    <p>
+        🌱 ECOLIFE — Small actions, big impact.
+    </p>
+
+</footer>
+
+
+</body>
+</html>

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Admin Login | EcoLife</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+
+        .login-container {
+            min-height: 80vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 30px;
+        }
+
+        .login-box {
+            width: 100%;
+            max-width: 450px;
+            background: #fffdf8;
+            border: 3px solid #222;
+            border-radius: 25px;
+            padding: 35px;
+            box-shadow: 8px 8px 0 #222;
+        }
+
+        .login-box h1 {
+            text-align: center;
+            font-size: 35px;
+            margin-bottom: 10px;
+        }
+
+        .login-box p {
+            text-align: center;
+            color: #667085;
+            margin-bottom: 30px;
+        }
+
+        .login-box label {
+            display: block;
+            font-weight: 800;
+            margin: 15px 0 8px;
+        }
+
+        .login-box input {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 15px;
+            border: 2px solid #aaa;
+            border-radius: 12px;
+            font-size: 18px;
+        }
+
+        .login-btn {
+            width: 100%;
+            margin-top: 25px;
+            padding: 15px;
+            background: #43d5a0;
+            border: 3px solid #222;
+            border-radius: 12px;
+            font-size: 20px;
+            font-weight: 900;
+            cursor: pointer;
+            box-shadow: 4px 4px 0 #222;
+        }
+
+        .flash {
+            background: #ffd6d6;
+            border: 2px solid #222;
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<nav class="navbar">
+
+    <div class="logo">
+        🌱 EcoLife
+    </div>
+
+</nav>
+
+
+<div class="login-container">
+
+
+    <div class="login-box">
+
+
+        <h1>
+            🔐 Admin Login
+        </h1>
+
+
+        <p>
+            Login to view EcoLife data
+        </p>
+
+
+        {% with messages = get_flashed_messages() %}
+
+            {% if messages %}
+
+                {% for message in messages %}
+
+                    <div class="flash">
+                        {{ message }}
+                    </div>
+
+                {% endfor %}
+
+            {% endif %}
+
+        {% endwith %}
+
+
+        <form method="POST">
+
+
+            <label>
+                Username
+            </label>
+
+            <input
+                type="text"
+                name="username"
+                placeholder="Enter username"
+                required
+            >
+
+
+            <label>
+                Password
+            </label>
+
+            <input
+                type="password"
+                name="password"
+                placeholder="Enter password"
+                required
+            >
+
+
+            <button
+                type="submit"
+                class="login-btn"
+            >
+                Login 🔐
+            </button>
+
+
+        </form>
+
+
+    </div>
+
+
+</div>
+
+
+</body>
+
+</html>
